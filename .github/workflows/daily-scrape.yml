@@ -42,9 +42,12 @@ jobs:
         run: |
           git config user.name "Job Search Bot"
           git config user.email "bot@jobsearch.com"
-          git add summaries/ data/
-          git diff --quiet && git diff --staged --quiet || \
+          git add summaries/ data/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
             git commit -m "📊 Daily summary $(date +%Y-%m-%d)"
-          git push
+            git push
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
