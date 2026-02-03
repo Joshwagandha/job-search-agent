@@ -1,0 +1,94 @@
+{
+  "job_search_criteria": {
+    "target_roles": [
+      "Customer Support Operations Manager",
+      "Customer Experience Manager",
+      "Customer Experience Lead",
+      "Product Manager - Internal Tools",
+      "Product Manager - Operations",
+      "Implementation Manager",
+      "Operations Manager",
+      "Fractional Operations Consultant",
+      "Head of Customer Success"
+    ],
+    "location": {
+      "remote_only": true,
+      "current_location": "Daleville, Virginia",
+      "acceptable_timezones": ["US/Eastern", "US/Central", "US/Mountain", "US/Pacific"],
+      "open_to_global_companies": true
+    },
+    "target_industries": [
+      "Fintech",
+      "Payment infrastructure",
+      "Cannabis/Hemp",
+      "Outdoor recreation",
+      "Meditation/Wellness",
+      "Yoga/Fitness",
+      "Disc golf/Sports",
+      "Automotive",
+      "Pet/Animal care",
+      "Cycling/Bicycles",
+      "Men's fashion/Apparel",
+      "Jewelry",
+      "Home improvement/DIY",
+      "Health & fitness",
+      "Plant-based/Vegan products",
+      "Furniture/MCM design",
+      "True crime media/Podcasts",
+      "E-commerce",
+      "SaaS/Tech tools"
+    ],
+    "company_stage": [
+      "Early-stage startup",
+      "YC-backed companies",
+      "Seed stage",
+      "Series A",
+      "Series B",
+      "Growth stage SaaS"
+    ],
+    "target_companies": [
+      "Lithic",
+      "Rain.xyz",
+      "HMBradley-like fintechs",
+      "YC companies",
+      "Puffy-style e-commerce"
+    ],
+    "required_skills": [
+      "Zendesk administration",
+      "AI/automation workflows",
+      "Customer experience operations",
+      "Internal tools/systems",
+      "Team leadership",
+      "Fintech compliance",
+      "Process optimization",
+      "Operations management",
+      "6-10 person team management"
+    ],
+    "avoid": {
+      "industries": ["Healthcare (clinical)", "Enterprise B2B software engineering"],
+      "requirements": [
+        "In-office required",
+        "Hybrid required",
+        "Relocation required",
+        "Heavy sales quotas",
+        "Commission-based",
+        "Specific certifications not held",
+        "Deep technical engineering"
+      ]
+    },
+    "experience_highlights": {
+      "fintech_background": "Lithic, Rain.xyz, HMBradley",
+      "cannabis_industry": "Head grower 2016-2018",
+      "ecommerce": "Customer support operations",
+      "team_size": "6-10 person teams",
+      "tools": "Zendesk, AI automation, CX platforms"
+    }
+  },
+  "scoring_weights": {
+    "remote_match": 0.3,
+    "industry_match": 0.25,
+    "role_match": 0.2,
+    "company_stage_match": 0.15,
+    "skills_match": 0.1
+  }
+}

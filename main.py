@@ -11,10 +11,9 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-# Your imports here
-# from scrapers.greenhouse import scrape_greenhouse
-# from analyzers.scorer import score_jobs
-# from summarizers.daily import generate_daily_summary
+# Import scrapers and analyzers
+from scrapers.yc_jobs import scrape_yc_jobs
+from analyzers.scorer import score_jobs_batch
 
 # Create logs directory before setting up logging
 os.makedirs('logs', exist_ok=True)
@@ -27,6 +26,78 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+
+
+def generate_summary(scored_jobs: list, date: str) -> str:
+    """
+    Generate a markdown summary of job search results
+    
+    Args:
+        scored_jobs: List of scored job dictionaries
+        date: Date string (YYYY-MM-DD)
+    
+    Returns:
+        Markdown formatted summary
+    """
+    summary = f"""# Job Search Summary - {date}
+
+## 🎯 Overview
+
+Found **{len(scored_jobs)}** matching jobs today!
+
+"""
+    
+    if not scored_jobs:
+        summary += """No jobs found matching your criteria today. The search continues tomorrow!
+
+### Next Steps
+- Scrapers will run again tomorrow
+- Check back for new opportunities
+"""
+        return summary
+    
+    # Top 10 jobs
+    summary += "## 🌟 Top Opportunities\n\n"
+    
+    for i, job_result in enumerate(scored_jobs[:10], 1):
+        job = job_result['job']
+        score = job_result['total_score']
+        scores = job_result['scores']
+        
+        summary += f"""### {i}. {job['title']} at {job['company']}
+
+**Score:** {score}/1.0  
+**Location:** {job['location']}  
+**Source:** {job['source']}  
+**URL:** {job['url']}
+
+**Why it's a match:**
+- Remote Match: {scores['remote_score']:.0%}
+- Industry Match: {scores['industry_score']:.0%}
+- Role Match: {scores['role_score']:.0%}
+- Skills Match: {scores['skills_score']:.0%}
+
+---
+
+"""
+    
+    # Stats
+    summary += f"""## 📊 Statistics
+
+- Total jobs scraped: {len(scored_jobs)}
+- Jobs meeting criteria: {len(scored_jobs)}
+- Average score: {sum(j['total_score'] for j in scored_jobs) / len(scored_jobs):.2f}
+- Top score: {max(j['total_score'] for j in scored_jobs):.2f}
+
+## 🛠️ Sources
+
+- Y Combinator Work at a Startup
+
+---
+*Generated automatically by Job Search Agent*
+"""
+    
+    return summary
 
 def main():
     parser = argparse.ArgumentParser(description='Job Search Automation Agent')
@@ -49,37 +120,31 @@ def main():
         Path('data').mkdir(exist_ok=True)
         Path('logs').mkdir(exist_ok=True)
         
-        # Generate test summary
         today = datetime.now().strftime('%Y-%m-%d')
+        
+        # 1. Scrape jobs from YC
+        logging.info("Scraping YC jobs...")
+        yc_jobs = scrape_yc_jobs()
+        
+        # Save raw data
+        data_file = Path('data') / f'jobs_{today}.json'
+        with open(data_file, 'w') as f:
+            json.dump(yc_jobs, f, indent=2)
+        logging.info(f"Saved {len(yc_jobs)} raw jobs to {data_file}")
+        
+        # 2. Score and filter jobs
+        logging.info("Scoring jobs...")
+        scored_jobs = score_jobs_batch(yc_jobs)
+        logging.info(f"Found {len(scored_jobs)} good matches")
+        
+        # 3. Generate summary
         summary_file = Path('summaries') / f'{today}.md'
+        summary_content = generate_summary(scored_jobs, today)
+        summary_file.write_text(summary_content)
         
-        test_summary = f"""# Job Search Summary - {today}
-
-## 🎯 Test Run
-
-This is a test run to verify your job search automation is working!
-
-### System Status
-✅ Python environment: Working
-✅ Dependencies installed: Working
-✅ File system access: Working
-✅ GitHub Actions: Working
-✅ OpenAI API: Ready (not tested yet)
-
-### Next Steps
-1. Define your job search criteria
-2. Build scrapers for target companies
-3. Add job analysis logic
-4. Start finding great opportunities!
-
----
-*Generated automatically by Job Search Agent*
-"""
-        
-        summary_file.write_text(test_summary)
         logging.info(f"Summary written to {summary_file}")
-        print(f"📊 Test summary generated at {summary_file}")
-        print("✅ Everything is working!")
+        print(f"📊 Daily summary generated at {summary_file}")
+        print(f"✅ Found {len(scored_jobs)} matching jobs!")
         
     elif args.scrape_only:
         logging.info("Scraping mode")
