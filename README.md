@@ -27,9 +27,10 @@ job-search-agent/
 ✅ Python dependencies configured
 ✅ GitHub Actions workflow ready
 ✅ Warp environment created
-⏭️ Add OpenAI API key to GitHub Secrets
-⏭️ Build job scrapers
-⏭️ Build job analyzers
+✅ OpenAI API key configured
+✅ Job scrapers built (7 sources)
+✅ Job analyzer/scorer built
+✅ Automated daily runs configured
 
 ## How to Use
 
@@ -48,6 +49,39 @@ Check the `summaries/` folder for daily reports, automatically committed to this
 3. Create analysis logic for scoring jobs
 4. Test the workflow manually on GitHub
 5. Let it run automatically every day!
+
+## Job Sources
+
+The agent scrapes from 7 major job boards daily:
+
+1. **LinkedIn** - Remote jobs in US
+2. **Indeed** - Remote positions
+3. **Wellfound** (formerly AngelList) - Startup jobs
+4. **Y Combinator** - YC company jobs
+5. **4-Hour Workweek** - Tim Ferriss job board
+6. **80,000 Hours** - Impact-focused careers
+7. **Remote OK** - Remote-first companies
+
+## Job Criteria
+
+**Target Roles:**
+- Customer Operations Manager
+- Customer Experience Manager/Lead
+- Product Manager (Operations/Internal Tools)
+- Implementation Manager
+- Operations Manager
+
+**Must-Have:**
+- ✅ Remote ONLY (non-negotiable)
+- ✅ US timezones
+- ✅ Early-stage startups preferred
+
+**Target Industries:**
+- Fintech/Payments
+- Cannabis/Hemp
+- Outdoor recreation, Wellness, Fitness
+- E-commerce, SaaS
+- And 15+ other industries
 
 ## Tech Stack
 
