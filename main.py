@@ -7,6 +7,7 @@ Runs daily scraping, analysis, and summary generation
 import argparse
 import json
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -14,6 +15,9 @@ from pathlib import Path
 # from scrapers.greenhouse import scrape_greenhouse
 # from analyzers.scorer import score_jobs
 # from summarizers.daily import generate_daily_summary
+
+# Create logs directory before setting up logging
+os.makedirs('logs', exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
