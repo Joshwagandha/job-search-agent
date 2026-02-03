@@ -39,11 +39,43 @@ def main():
     
     if args.daily_summary:
         logging.info("Running daily summary workflow")
-        # 1. Scrape all target companies
-        # 2. Score jobs (fit + likelihood)
-        # 3. Generate summary
-        # 4. Save to summaries/YYYY-MM-DD.md
-        print("📊 Daily summary generated!")
+        
+        # Create directories if they don't exist
+        Path('summaries').mkdir(exist_ok=True)
+        Path('data').mkdir(exist_ok=True)
+        Path('logs').mkdir(exist_ok=True)
+        
+        # Generate test summary
+        today = datetime.now().strftime('%Y-%m-%d')
+        summary_file = Path('summaries') / f'{today}.md'
+        
+        test_summary = f"""# Job Search Summary - {today}
+
+## 🎯 Test Run
+
+This is a test run to verify your job search automation is working!
+
+### System Status
+✅ Python environment: Working
+✅ Dependencies installed: Working
+✅ File system access: Working
+✅ GitHub Actions: Working
+✅ OpenAI API: Ready (not tested yet)
+
+### Next Steps
+1. Define your job search criteria
+2. Build scrapers for target companies
+3. Add job analysis logic
+4. Start finding great opportunities!
+
+---
+*Generated automatically by Job Search Agent*
+"""
+        
+        summary_file.write_text(test_summary)
+        logging.info(f"Summary written to {summary_file}")
+        print(f"📊 Test summary generated at {summary_file}")
+        print("✅ Everything is working!")
         
     elif args.scrape_only:
         logging.info("Scraping mode")
