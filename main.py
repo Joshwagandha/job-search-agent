@@ -13,6 +13,12 @@ from pathlib import Path
 
 # Import scrapers and analyzers
 from scrapers.yc_jobs import scrape_yc_jobs
+from scrapers.linkedin import scrape_linkedin_jobs
+from scrapers.indeed import scrape_indeed_jobs
+from scrapers.wellfound import scrape_wellfound_jobs
+from scrapers.four_hour_workweek import scrape_4hw_jobs
+from scrapers.eighty_thousand_hours import scrape_80k_hours_jobs
+from scrapers.remote_ok import scrape_remote_ok_jobs
 from analyzers.scorer import score_jobs_batch
 
 # Create logs directory before setting up logging
@@ -91,7 +97,13 @@ Found **{len(scored_jobs)}** matching jobs today!
 
 ## 🛠️ Sources
 
+- LinkedIn
+- Indeed
+- Wellfound (AngelList)
 - Y Combinator Work at a Startup
+- 4-Hour Workweek Job Board
+- 80,000 Hours
+- Remote OK
 
 ---
 *Generated automatically by Job Search Agent*
@@ -122,19 +134,69 @@ def main():
         
         today = datetime.now().strftime('%Y-%m-%d')
         
-        # 1. Scrape jobs from YC
+        # 1. Scrape jobs from all sources
+        all_jobs = []
+        
+        logging.info("Scraping LinkedIn jobs...")
+        try:
+            linkedin_jobs = scrape_linkedin_jobs()
+            all_jobs.extend(linkedin_jobs)
+        except Exception as e:
+            logger.error(f"LinkedIn scraper failed: {e}")
+        
+        logging.info("Scraping Indeed jobs...")
+        try:
+            indeed_jobs = scrape_indeed_jobs()
+            all_jobs.extend(indeed_jobs)
+        except Exception as e:
+            logger.error(f"Indeed scraper failed: {e}")
+        
+        logging.info("Scraping Wellfound jobs...")
+        try:
+            wellfound_jobs = scrape_wellfound_jobs()
+            all_jobs.extend(wellfound_jobs)
+        except Exception as e:
+            logger.error(f"Wellfound scraper failed: {e}")
+        
         logging.info("Scraping YC jobs...")
-        yc_jobs = scrape_yc_jobs()
+        try:
+            yc_jobs = scrape_yc_jobs()
+            all_jobs.extend(yc_jobs)
+        except Exception as e:
+            logger.error(f"YC scraper failed: {e}")
+        
+        logging.info("Scraping 4-Hour Workweek jobs...")
+        try:
+            hw4_jobs = scrape_4hw_jobs()
+            all_jobs.extend(hw4_jobs)
+        except Exception as e:
+            logger.error(f"4HW scraper failed: {e}")
+        
+        logging.info("Scraping 80,000 Hours jobs...")
+        try:
+            eighty_k_jobs = scrape_80k_hours_jobs()
+            all_jobs.extend(eighty_k_jobs)
+        except Exception as e:
+            logger.error(f"80k Hours scraper failed: {e}")
+        
+        logging.info("Scraping Remote OK jobs...")
+        try:
+            remote_ok_jobs = scrape_remote_ok_jobs()
+            all_jobs.extend(remote_ok_jobs)
+        except Exception as e:
+            logger.error(f"Remote OK scraper failed: {e}")
+        
+        logging.info(f"Total jobs scraped from all sources: {len(all_jobs)}")
         
         # Save raw data
         data_file = Path('data') / f'jobs_{today}.json'
         with open(data_file, 'w') as f:
-            json.dump(yc_jobs, f, indent=2)
-        logging.info(f"Saved {len(yc_jobs)} raw jobs to {data_file}")
+            json.dump(all_jobs, f, indent=2)
+        logging.info(f"Saved {len(all_jobs)} raw jobs to {data_file}")
         
         # 2. Score and filter jobs
         logging.info("Scoring jobs...")
-        scored_jobs = score_jobs_batch(yc_jobs)
+        scored_jobs = score_jobs_batch(all_jobs)
         logging.info(f"Found {len(scored_jobs)} good matches")
         
         # 3. Generate summary
