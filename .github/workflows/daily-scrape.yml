@@ -1,0 +1,50 @@
+name: Daily Job Scrape
+
+on:
+  schedule:
+    # Runs every day at 8am UTC (12am PST / 3am EST)
+    - cron: '0 8 * * *'
+  
+  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  scrape-and-summarize:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Run daily scrape and summary
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Add other API keys as needed
+        run: |
+          python main.py --daily-summary
+      
+      - name: Commit and push summary
+        run: |
+          git config user.name "Job Search Bot"
+          git config user.email "bot@jobsearch.com"
+          git add summaries/ data/
+          git diff --quiet && git diff --staged --quiet || \
+            git commit -m "📊 Daily summary $(date +%Y-%m-%d)"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
