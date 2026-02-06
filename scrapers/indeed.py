@@ -27,6 +27,8 @@ def scrape_indeed_jobs(keywords: List[str] = None, max_results: int = 50) -> Lis
     """
     if keywords is None:
         keywords = [
+            "Internal Tools"
+            "Product Manager"
             "Customer Operations Manager remote",
             "Customer Experience Manager remote",
             "Operations Manager remote",
