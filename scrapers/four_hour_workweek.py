@@ -48,7 +48,7 @@ def scrape_4hw_jobs(max_results: int = 30) -> List[Dict]:
             # Look for common job board patterns
             job_links = soup.find_all('a', href=True, string=lambda x: x and any(
                 keyword in x.lower() for keyword in 
-                ['manager', 'operations', 'customer', 'product', 'remote']
+                ['manager', 'operations', 'customer', 'product', 'remote', 'internal tools', 'cannabis']
             ))
             
             for link in job_links[:max_results]:
