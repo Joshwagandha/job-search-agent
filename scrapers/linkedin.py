@@ -27,11 +27,13 @@ def scrape_linkedin_jobs(keywords: List[str] = None, max_results: int = 50) -> L
     """
     if keywords is None:
         keywords = [
-            "Customer Operations Manager",
-            "Customer Experience Manager",
-            "Operations Manager",
-            "Product Manager Operations",
-            "Implementation Manager"
+            "Product consulting remote"
+            "Internal Tools remote"
+            "Product Manager remote"
+            "Customer Operations Manager remote",
+            "Customer Experience Manager remote",
+            "Operations Manager remote",
+            "Implementation Manager remote"
         ]
     
     jobs = []
